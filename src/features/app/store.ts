@@ -1,9 +1,13 @@
 import {applyMiddleware, combineReducers, legacy_createStore as createStore} from 'redux'
 import thunk from 'redux-thunk'
-import {postsDispatch, postsReducer} from '../posts/reducer'
+import {postsDispatch, postsReducer} from '../posts/posts-reducer'
 import {useDispatch} from 'react-redux'
+import {authorsReducer} from '../posts/authors-reducer'
 
-let rootReducer = combineReducers({posts: postsReducer})
+let rootReducer = combineReducers({
+    posts: postsReducer,
+    authors: authorsReducer
+})
 
 export type AppStateType = ReturnType<typeof rootReducer>
 

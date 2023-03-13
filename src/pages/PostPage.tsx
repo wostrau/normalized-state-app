@@ -2,11 +2,11 @@ import React, {useEffect} from 'react'
 import {Post} from '../features/posts/components/Post'
 import {useSelector} from 'react-redux'
 import {AppStateType, useAppDispatch} from '../features/app/store'
-import {fetchPosts} from '../features/posts/reducer'
+import {fetchPosts} from '../features/posts/posts-reducer'
 
 
 export const PostPage: React.FC = (props) => {
-    const items = useSelector((state: AppStateType) => state.posts.items)
+    const ids = useSelector((state: AppStateType) => state.posts.allIds)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -15,7 +15,7 @@ export const PostPage: React.FC = (props) => {
 
     return (
         <div>
-            {items.map(i => <Post key={i.id} post={i}/>)}
+            {ids.map(id => <Post key={id} postId={id}/>)}
         </div>
     )
 }

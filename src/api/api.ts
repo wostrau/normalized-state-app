@@ -1,19 +1,19 @@
-export type AuthorType = {
+export type AuthorAPIType = {
     id: number
     name: string
 }
 
-export type PostType = {
+export type PostsAPIType = {
     id: number
     text: string
     likes: number
-    author: AuthorType
+    author: AuthorAPIType
 }
 
 export type apiType = typeof api
 
 export const api = {
-    getPosts(): Promise<PostType[]> {
+    getPosts(): Promise<PostsAPIType[]> {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve([
@@ -41,8 +41,8 @@ export const api = {
                         text: 'The  weather is good today',
                         likes: 10,
                         author: {
-                            id: 3,
-                            name: 'Toby'
+                            id: 1,
+                            name: 'Sanya'
                         }
                     }
                 ])
