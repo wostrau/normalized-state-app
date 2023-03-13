@@ -1,12 +1,15 @@
 import React from 'react'
 import './App.css'
 import {PostPage} from './pages/PostPage'
+import {Provider} from 'react-redux'
 
-function App() {
+const App: React.FC<{ store: any }> = (props) => {
     return (
-        <div className="App">
-            <PostPage/>
-        </div>
+        <Provider store={props.store}>
+            <div className="App">
+                <PostPage/>
+            </div>
+        </Provider>
     )
 }
 

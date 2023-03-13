@@ -1,15 +1,21 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Post} from '../features/posts/components/Post'
 import {useSelector} from 'react-redux'
+import {AppStateType, useAppDispatch} from '../features/app/store'
+import {fetchPosts} from '../features/posts/reducer'
 
-type PostPagePropsType = {}
 
-export const PostPage: React.FC<PostPagePropsType> = (props) => {
-    const items = useSelector(state => state.posts.items)
+export const PostPage: React.FC = (props) => {
+    const items = useSelector((state: AppStateType) => state.posts.items)
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(fetchPosts())
+    }, [])
 
     return (
         <div>
-            {items.map(i => <Post post={i}/>)}
+            {items.map(i => <Post key={i.id} post={i}/>)}
         </div>
     )
 }
