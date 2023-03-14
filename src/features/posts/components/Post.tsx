@@ -2,6 +2,8 @@ import React, {useState} from 'react'
 import {AppStateType, useAppDispatch} from '../../app/store'
 import {updatePost} from '../posts-reducer'
 import {useSelector} from 'react-redux'
+import {Comment} from './Comment'
+import {fetchComments} from '../comments-reducer'
 
 export const Post: React.FC<{ postId: number }> = ({postId}) => {
     const post = useSelector((state: AppStateType) => state.posts.byId[postId])
@@ -28,6 +30,11 @@ export const Post: React.FC<{ postId: number }> = ({postId}) => {
                 >{post.text}</span>}
             <br/>
             likes: {post.likes}
+            <hr/>
+            comments: <ul>{post.commentsIds.map(id => <Comment key={id} id={id} postId={postId}/>)}</ul>
+            <button
+            onClick={()=>dispatch(fetchComments(postId))}
+            >all comments</button>
             <hr/>
         </div>
     )

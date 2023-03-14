@@ -1,12 +1,14 @@
-import {api, apiType, PostsAPIType} from '../../api/api'
+import {api, apiType, PostAPIType} from '../../api/api'
 import {ThunkDispatch} from 'redux-thunk'
 import {AppStateType} from '../app/store'
+import {deleteCommentSuccess, fetchCommentsSuccess} from './comments-reducer'
 
 export type PostsType = {
     id: number
     text: string
     likes: number
     authorId: number
+    commentsIds: number[]
 }
 
 const initialState = {
@@ -25,7 +27,11 @@ export const mapToLookupTable = <T extends { id: number }>(items: T[]): LookupTa
     }, acc)
 }
 
-type postsActions = ReturnType<typeof fetchPostsSuccess> | ReturnType<typeof updatePostSuccess>
+type postsActions =
+    ReturnType<typeof fetchPostsSuccess>
+    | ReturnType<typeof updatePostSuccess>
+    | ReturnType<typeof fetchCommentsSuccess>
+    | ReturnType<typeof deleteCommentSuccess>
 
 export const postsReducer = (state = initialState, action: postsActions) => {
     switch (action.type) {
@@ -39,7 +45,8 @@ export const postsReducer = (state = initialState, action: postsActions) => {
                         id: p.id,
                         text: p.text,
                         likes: p.likes,
-                        authorId: p.author.id
+                        authorId: p.author.id,
+                        commentsIds: p.lastComments.map(c => c.id)
                     }
                     return postCopy
                 }))
@@ -55,11 +62,36 @@ export const postsReducer = (state = initialState, action: postsActions) => {
                 }
             }
         }
+        case 'COMMENTS/FETCH-COMMENTS-SUCCESS': {
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    [action.payload.postId]: {
+                        ...state.byId[action.payload.postId],
+                        commentsIds: action.payload.comments.map(c => c.id)
+                    }
+                }
+            }
+        }
+        case 'COMMENTS/DELETE-COMMENT-SUCCESS': {
+            const post = state.byId[action.payload.postId]
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    [action.payload.postId]: {
+                        ...post,
+                        commentsIds: post.commentsIds.filter(id => id !== action.payload.commentId)
+                    }
+                }
+            }
+        }
     }
     return state
 }
 
-export const fetchPostsSuccess = (posts: PostsAPIType[]) => ({
+export const fetchPostsSuccess = (posts: PostAPIType[]) => ({
     type: 'POSTS/FETCH-POSTS-SUCCESS',
     payload: {posts}
 } as const)
